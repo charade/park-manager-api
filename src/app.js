@@ -7,7 +7,7 @@ const { SERVER_ERROR } = require('./handlers/status_codes');
 const app = express();
 const PORT = process.env.PORT || 3002;
 
-app.use(cors());
+app.use(cors())
 
 app.use(router);
 

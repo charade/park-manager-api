@@ -1,2 +1,2 @@
-const company = require('./companies');
-module.exports  =  { company }
+const users = require('./users');
+module.exports  =  { users }

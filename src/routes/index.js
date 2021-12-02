@@ -1,8 +1,9 @@
 const router = require('express').Router();
 const userRouter = require('./users');
-const companiesRouter = require('./companies');
+const { verifyToken } = require('../utils/authentication');
 
-router.use('/company', companiesRouter);
-router.use('/users', userRouter);
+router
+.use('/:param/auth', verifyToken)
+.use('/users', userRouter)
 
 module.exports = router;

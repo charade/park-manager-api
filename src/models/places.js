@@ -6,7 +6,6 @@ module.exports = (sequelize, DataTypes) => {
   class Places extends Model {
     static associate(models) {
       this.belongsTo(models.users, { foreignKey : 'userId'});
-      this.belongsTo(models.companies, { foreignKey : 'companyId' });
     }
   };
   Places.init({

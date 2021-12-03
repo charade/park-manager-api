@@ -9,12 +9,13 @@ const PORT = process.env.PORT || 3002;
 
 app.use(cors())
 
+app.use(express.json())
+app.use(express.urlencoded())
 app.use(router);
-
 //errors handling
 app.use((err, req, res, next) => {
     res.status(err.status || SERVER_ERROR).json({
-        description : error.description || 'Oops something went wrong'
+        description : err.description || 'Oops something went wrong'
     });
 });
 

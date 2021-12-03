@@ -16,7 +16,9 @@
   },
   "scripts": {
     "start": "node ./src/app.js",
-    "dev" : "nodemon ./src/app.js"
+    "dev" : "nodemon ./src/app.js",
+    "sequelize" : "sequelize --help"
+
   },
   "author": "",
   "license": "ISC"

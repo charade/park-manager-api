@@ -14,7 +14,9 @@ module.exports = {
         if(user){
             return { error : new ErrorOccured(FORBIDDEN, 'this user is already registered') }
         };
+
         //succesfully created
+        await users.create(data);
         return ;
     },
 
@@ -28,7 +30,7 @@ module.exports = {
         if(!user){
             return { error : new ErrorOccured(NOT_FOUND, "this user is not registered") };
         };
-        const isPasswordValid = await checkPassword(data.password, company.hash);
+        const isPasswordValid = await checkPassword(data.password, user.password);
 
         if(!isPasswordValid){
             return { error : new ErrorOccured(UNAUTHORIZED, 'invalid password') }

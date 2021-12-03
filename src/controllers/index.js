@@ -1,2 +1,4 @@
 const users = require('./users');
-module.exports  =  { users }
+const places = require('./places');
+
+module.exports  =  { users, places }

@@ -15,10 +15,21 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue : DataTypes.UUIDV4
     },
     floor : DataTypes.INTEGER,
-    number: DataTypes.STRING,
-    availability: DataTypes.BOOLEAN,
-    occupancyTime: DataTypes.STRING,
-    userId : DataTypes.UUID
+    placeNumber: DataTypes.INTEGER,
+    available: {
+      type : DataTypes.BOOLEAN, 
+      defaultValue : true
+    },
+    //timeStamp
+    occupancyTime: {
+      type : DataTypes.INTEGER,
+      defaultValue :0
+    },
+    userId : {
+      type : DataTypes.UUID,
+      allowNull : true,
+      defaultValue : null
+    }
   }, {
     sequelize,
     modelName: 'places',

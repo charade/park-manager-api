@@ -3,8 +3,8 @@
  */
 const router = require('express').Router();
 const { places } = require('../controllers');
-const { CREATED, SUCCESS } = require('../handlers/status_codes');
-const { create, getAllAvailable, getAllAvailableByFloor } = places ;
+const { CREATED, SUCCESS, NO_CONTENT } = require('../handlers/status_codes');
+const { create, getAllAvailable, getAllAvailableByFloor, reserve } = places ;
 
 //create a place
 router.post('/auth', async(req, res, next) => {
@@ -28,5 +28,17 @@ router.get('/auth/:floor', async(req, res) => {
     const response = await getAllAvailableByFloor(floor);
     res.status(CREATED).status(response);
 });
+
+router.patch('/auth', async(req, res, next) => {
+    const { id } = req;
+    req.body.userId = id;
+    const response =  await reserve(req.body);
+
+    if(response.error){
+        next(response.error);
+        return;
+    }
+    res.status(NO_CONTENT);
+})
 
 module.exports = router;

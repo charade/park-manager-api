@@ -1,12 +1,12 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model} = require('sequelize');
+
+const { role } = require('../utils/constants');
 
 module.exports = (sequelize, DataTypes) => {
   class Users extends Model {
     static associate(models) {
-
+      this.belongsTo(models.companies, { foreignKey : 'companyId', as : 'company' })
     }
   };
 
@@ -19,12 +19,13 @@ module.exports = (sequelize, DataTypes) => {
     email : DataTypes.STRING,
     role : {
       type : DataTypes.STRING(6),
-      defaultValue : 'public'
+      defaultValue : role.PUBLIC
     },
     firstName: DataTypes.STRING,
     lastName: DataTypes.STRING,
     password: DataTypes.STRING,
     avatar: DataTypes.STRING,
+    companyId : DataTypes.UUID
   }, {
     sequelize,
     modelName: 'users',

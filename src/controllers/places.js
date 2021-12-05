@@ -20,11 +20,9 @@ module.exports = {
         return createdPlace;
     },
 
-    getAllAvailable : () => {
+    getAllAvailable : (companyId) => {
         return places.findAll({
-            where : {
-                available: true
-            }
+            where : { available: true, companyId }
         })
     },
 

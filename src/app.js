@@ -12,6 +12,7 @@ app.use(cors());
 app.use(express.json())
 app.use(express.urlencoded())
 app.use(router);
+
 //errors handling
 app.use((err, req, res, next) => {
     res.status(err.status || SERVER_ERROR).json({

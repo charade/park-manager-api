@@ -8,7 +8,11 @@ const { create, getAllAvailable, getAllAvailableByFloor, reserve } = places ;
 
 //create a place
 router.post('/auth', async(req, res, next) => {
+    const { companyId } = req;
+    req.body.companyId = companyId;
+
     const response = await create(req.body);
+
     if(response.error){
         next(response.error);
         return;
@@ -18,7 +22,9 @@ router.post('/auth', async(req, res, next) => {
 
 // get all available places
 router.get('/auth', async(req, res) => {
-    const response = await getAllAvailable();
+    //assume users can only fetch available place from their company;
+    const { companyId } = req;
+    const response = await getAllAvailable(companyId);
     res.status(SUCCESS).json(response);
 });
 
@@ -29,6 +35,7 @@ router.get('/auth/:floor', async(req, res) => {
     res.status(SUCCESS).json(response);
 });
 
+//update
 router.patch('/auth', async(req, res, next) => {
     const { id } = req;
     req.body.userId = id;

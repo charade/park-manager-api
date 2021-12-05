@@ -24,9 +24,9 @@ router.get('/auth', async(req, res) => {
 
 //git available places by floor
 router.get('/auth/:floor', async(req, res) => {
-    const { floor } = req.params;
-    const response = await getAllAvailableByFloor(floor);
-    res.status(CREATED).status(response);
+    //floor is the only one param
+    const response = await getAllAvailableByFloor(req.params);
+    res.status(SUCCESS).json(response);
 });
 
 router.patch('/auth', async(req, res, next) => {
@@ -37,8 +37,8 @@ router.patch('/auth', async(req, res, next) => {
     if(response.error){
         next(response.error);
         return;
-    }
-    res.status(NO_CONTENT);
+    };
+    res.status(SUCCESS).json(response);
 })
 
 module.exports = router;

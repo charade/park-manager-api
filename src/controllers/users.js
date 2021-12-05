@@ -12,9 +12,8 @@ module.exports = {
             }
          });
         if(user){
-            return { error : new ErrorOccured(FORBIDDEN, 'this user is already registered') }
+            return { error : new ErrorOccured(FORBIDDEN, 'This e-mail already exists.') }
         };
-
         //succesfully created
         await users.create(data);
         return ;
@@ -28,12 +27,12 @@ module.exports = {
         });
         //check password
         if(!user){
-            return { error : new ErrorOccured(NOT_FOUND, "this user is not registered") };
+            return { error : new ErrorOccured(NOT_FOUND, "User not found.") };
         };
         const isPasswordValid = await checkPassword(data.password, user.password);
 
         if(!isPasswordValid){
-            return { error : new ErrorOccured(UNAUTHORIZED, 'invalid password') }
+            return { error : new ErrorOccured(UNAUTHORIZED, 'Invalid password') }
         };
         
         return user;

@@ -7,7 +7,7 @@ const { SERVER_ERROR } = require('./handlers/status_codes');
 const app = express();
 const PORT = process.env.PORT || 3002;
 
-app.use(cors())
+app.use(cors());
 
 app.use(express.json())
 app.use(express.urlencoded())
@@ -22,6 +22,6 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () =>{
     console.log('port on :' +  PORT);
     db.sequelize.sync({alter: true});
-})
+});
 
 

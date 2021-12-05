@@ -29,7 +29,8 @@ router.post('/login', async(req, res, next) => {
     };
     const { avatar, firstName, lastName } = response.dataValues;
     const user = { avatar, firstName, lastName };
-    const token = await generateToken(response);
+    const { id } = response;
+    const token = await generateToken(id);
     res.status(SUCCESS).json({auth : token, user});
 })
 

@@ -17,7 +17,6 @@ module.exports = {
         };
 
         const createdPlace = await places.create(data);
-        console.log(createdPlace)
         return createdPlace;
     },
 
@@ -36,5 +35,24 @@ module.exports = {
                 available : true
             }
         })
+    },
+
+    reserve : async(data) => {
+        try{
+            const response = await places.update({ 
+                available : false,
+                userId : data.userId
+            },
+            {
+                where :{
+                    id: data.id
+                } 
+            })
+            //nb of updated rows
+            return response;
+        }
+        catch{
+            return { error : new Error() }
+        }
     }
 }

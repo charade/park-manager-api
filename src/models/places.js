@@ -5,9 +5,10 @@ const {
 module.exports = (sequelize, DataTypes) => {
   class Places extends Model {
     static associate(models) {
-      this.belongsTo(models.users, { foreignKey : 'userId'});
+      
     }
   };
+  
   Places.init({
     id : {
       type : DataTypes.UUID,

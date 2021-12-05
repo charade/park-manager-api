@@ -6,9 +6,10 @@ const {
 module.exports = (sequelize, DataTypes) => {
   class Users extends Model {
     static associate(models) {
-      this.hasOne(models.places, { foreignKey : 'userId' })
+
     }
   };
+
   Users.init({
     id : {
       type : DataTypes.UUID,

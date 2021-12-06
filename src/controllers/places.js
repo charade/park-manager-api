@@ -5,11 +5,10 @@ const { FORBIDDEN } = require('../handlers/status_codes');
 module.exports = {
     create : async(data) => {
         //ckeck if place already exists
+        const { floor, placeNumber, companyId } = data;
+
         const place = await places.findOne({
-            where : {
-                floor : data.floor,
-                placeNumber : data.placeNumber
-            }
+            where : { floor ,placeNumber, companyId }
         });
 
         if(place){

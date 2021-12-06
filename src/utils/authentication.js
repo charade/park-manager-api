@@ -13,7 +13,6 @@ module.exports = {
             next(new ErrorOccured(UNAUTHORIZED, 'authentication failed'));
             return;
         };
-        console.log(payload);
         req.companyId = payload.companyId;
         req.id = payload.id;
         next();

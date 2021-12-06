@@ -12,7 +12,6 @@ router.post('/auth', async(req, res, next) => {
     req.body.companyId = companyId;
 
     const response = await create(req.body);
-
     if(response.error){
         next(response.error);
         return;

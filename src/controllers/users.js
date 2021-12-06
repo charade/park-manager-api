@@ -23,10 +23,9 @@ module.exports = {
          */
         if(data.role === role.ADMIN){
             if(company){
-                return { error : new ErrorOccured(FORBIDDEN, 'Company already registered.') }
+                return { error : new ErrorOccured(FORBIDDEN, 'Company already registered.')}
             }
             //create company and user at same time with association
-            
             await companies.create({name}).then( async company => {
                 await users.create({
                     firstName, 
@@ -35,10 +34,9 @@ module.exports = {
                     role : data.role,
                     password,
                     companyId : company.id 
-                })
+                });
             });
-              
-            return
+            return;
         }
         /**
          * user sign up on registered company
@@ -46,12 +44,13 @@ module.exports = {
         else{
             if(!company){
                 return !company && { error : new ErrorOccured(NOT_FOUND, 'Company not Registered') }
-            }
-            await users.create(data)
+            };
+            const companyId = company.dataValues.id;
+            console.log(companyId)
+            await users.create({...data, companyId });
             return ;
         }
     },
-
     login : async(data) => {
         /**
          * check if unique email exists
@@ -68,10 +67,20 @@ module.exports = {
          * if user/email found
          */
         const isPasswordValid = await checkPassword(data.password, user.password);
-
         if(!isPasswordValid){
             return { error : new ErrorOccured(UNAUTHORIZED, 'Invalid password') }
         };
         return user;
-    }
+    },
+
+    getColleagues : (companyId, userId) => users.findAll({ 
+        where : { 
+            companyId,
+            id : {
+                [Op.ne] : userId
+            }
+        },
+        attributes : ['id', 'avatar', 'firstName', 'lastName', 'role']
+    }),
+
 }

@@ -60,11 +60,12 @@ router.patch('/auth', async(req, res, next) => {
 router.patch('/auth/free', async (req, res, next) => {
     const { id } = req.body;
     const response = await free(id);
-
+    
     if(response.error){
         next(response.error);
         return;
     };
+
     res.status(SUCCESS).json(response);
 })
 

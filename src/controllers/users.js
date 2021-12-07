@@ -1,4 +1,4 @@
-const { users, companies } = require('../models');
+const { users, companies, places } = require('../models');
 const ErrorOccured = require('../handlers/exception');
 const { FORBIDDEN, NOT_FOUND, UNAUTHORIZED } = require('../handlers/status_codes');
 const { checkPassword } = require('../utils/pass');
@@ -72,7 +72,8 @@ module.exports = {
         };
         return user;
     },
-
+    /**
+     */
     getColleagues : (companyId, userId) => users.findAll({ 
         where : { 
             companyId,
@@ -80,7 +81,21 @@ module.exports = {
                 [Op.ne] : userId
             }
         },
-        attributes : ['id', 'avatar', 'firstName', 'lastName', 'role']
+        attributes : ['id', 'avatar', 'firstName', 'lastName', 'role', 'email']
     }),
-
+    /**
+     * admin update others users permission
+     */
+    updatePermissions: async(id, role) => {
+        try{
+            const response = await users.update(
+                { role }, 
+                { where :  { id } }
+            );
+            return response;
+        }
+        catch{
+            return { error : new Error() }
+        }
+    },
 }

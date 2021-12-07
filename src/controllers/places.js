@@ -1,6 +1,6 @@
 const { places } = require('../models');
 const ErrorOccured = require('../handlers/exception')
-const { FORBIDDEN } = require('../handlers/status_codes');
+const { FORBIDDEN, NOT_FOUND } = require('../handlers/status_codes');
 
 module.exports = {
     create : async(data) => {
@@ -24,7 +24,6 @@ module.exports = {
             where : { available: true, companyId }
         })
     },
-
     getAllAvailableByFloor : (data) =>{
         return places.findAll({
             where : { 
@@ -34,18 +33,40 @@ module.exports = {
         })
     },
 
+    find : async (userId) => {
+        const place = await places.findOne({ where : { userId } })
+    
+        if(!place){
+            return { error : new ErrorOccured(NOT_FOUND, 'not found') }
+        }
+        
+        return place;
+    },
     reserve : async(data) => {
         try{
-            const response = await places.update({ 
-                available : false,
-                userId : data.userId
-            },
-            {
-                where :{
-                    id: data.id
-                } 
-            })
-            //nb of updated rows
+            const { userId, id } = data;
+            //check if user altready parked before assigning him a place
+            const userAlreadyReserved = await places.findOne({ where : { userId } });
+            if(userAlreadyReserved){
+                return { error : new ErrorOccured(FORBIDDEN, "You are already parked") }
+            }
+
+            const place = await places.findOne({ where : { id } });
+            place.userId = userId;
+            place.available = false
+            await place.save();
+            return place;
+        }
+        catch{
+            return { error : new Error()}
+        }
+    },
+    free : async (id) => {
+        try{
+            const response = await places.update(
+                { userId : null, available : true },
+                { where : { id } }
+            )
             return response;
         }
         catch{

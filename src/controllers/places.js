@@ -63,11 +63,11 @@ module.exports = {
     },
     free : async (id) => {
         try{
-            const response = await places.update(
-                { userId : null, available : true },
-                { where : { id } }
-            )
-            return response;
+            const place = await places.findOne({ where : { id } });
+            place.userId = null;
+            place.available = true;
+            await place.save();
+            return place;
         }
         catch{
             return { error : new Error() }

@@ -3,8 +3,8 @@
  */
 const router = require('express').Router();
 const { places } = require('../controllers');
+const { create, getAllAvailable, getAllAvailableByFloor, reserve, find, free } = places ;
 const { CREATED, SUCCESS, NO_CONTENT } = require('../handlers/status_codes');
-const { create, getAllAvailable, getAllAvailableByFloor, reserve } = places ;
 
 //create a place
 router.post('/auth', async(req, res, next) => {
@@ -17,6 +17,17 @@ router.post('/auth', async(req, res, next) => {
         return;
     }
     res.status(CREATED).json(response);
+});
+//find where user parked
+router.get('/auth/parked', async(req, res, next) => {
+    const { id } = req;
+    const place = await find(id);
+    
+    if(place.error){
+        next(place.error);
+        return;
+    }
+    res.status(SUCCESS).json(place);
 });
 
 // get all available places
@@ -39,6 +50,16 @@ router.patch('/auth', async(req, res, next) => {
     const { id } = req;
     req.body.userId = id;
     const response =  await reserve(req.body);
+    if(response.error){
+        next(response.error);
+        return;
+    };
+    res.status(SUCCESS).json(response);
+});
+
+router.patch('/auth/free', async (req, res, next) => {
+    const { id } = req.body;
+    const response = await free(id);
 
     if(response.error){
         next(response.error);

@@ -1,10 +1,9 @@
 const router = require('express').Router();
 const { users } = require('../controllers');
-const { register, login } = users
+const { register, login, updatePermissions,getColleagues } = users
 const { generateToken } = require('../utils/authentication');
 const { generateHash } = require('../utils/pass');
-const { CREATED, SUCCESS } = require('../handlers/status_codes');
-const { getColleagues } = require('../controllers/users');
+const { CREATED, SUCCESS, NO_CONTENT } = require('../handlers/status_codes');
 
 router.post('/register', async(req, res, next) => {
     const { password, email, companyName } = req.body;
@@ -16,7 +15,6 @@ router.post('/register', async(req, res, next) => {
     req.body.email = email.toLowerCase();
     req.body.companyName = companyName.toLowerCase();
     /**
-     * 
      */
     const response = await register(req.body);
     if(response && response.error){
@@ -33,8 +31,8 @@ router.post('/login', async(req, res, next) => {
         next(response.error);
         return;
     }; 
-    const { avatar, firstName, lastName, id, companyId, role } = response.dataValues;
-    const user = { avatar, firstName, lastName, role };
+    const { avatar, firstName, lastName, id, email, companyId, role } = response.dataValues;
+    const user = { avatar, firstName, lastName, role, email };
     const token = await generateToken({id, companyId});
     res.status(SUCCESS).json({auth : token, user});
 });
@@ -48,6 +46,20 @@ router.get('/auth/colleagues', async(req, res) => {
      */
     const colleagues = await getColleagues(companyId, id);
     res.status(SUCCESS).json(colleagues);
-})
+});
+/**
+ * update permissions
+ */
+router.patch('/auth/permission', async(req, res, next) => {
+    const { id, role } = req.body;
+    const response = await updatePermissions(id, role);
+    if(response.error){
+        next(response.error);
+        return;
+    }
+    res.status(SUCCESS).json({status : NO_CONTENT});
+});
+
+
 
 module.exports = router

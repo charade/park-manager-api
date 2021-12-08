@@ -43,7 +43,7 @@ module.exports = {
          */
         else{
             if(!company){
-                return !company && { error : new ErrorOccured(NOT_FOUND, 'Company not Registered') }
+                return !company && { error : new ErrorOccured(NOT_FOUND, 'Company not Registered yet') }
             };
             const companyId = company.dataValues.id;
             console.log(companyId)

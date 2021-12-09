@@ -98,4 +98,31 @@ module.exports = {
             return { error : new Error() }
         }
     },
+    updateUser : async(data) => {
+        try{
+         //check if new email is already in use
+        if(data.email){
+            const { email } = data
+            const usingEmail = await users.findOne({ where : { email } });
+
+            if(usingEmail){
+                return { error : new ErrorOccured(FORBIDDEN,'this email is already registered') }
+            }
+        };
+        const { id } = data;
+        const user = await users.findOne({ where : { id } });
+
+        Object.keys(data).forEach(el => {
+            user[el] = data[el];
+        });
+        await user.save();
+        delete user.dataValues.password;
+        return user;
+
+        }
+        catch{
+            return {error : new Error()}
+        }
+        
+    }
 }

@@ -40,8 +40,9 @@ router.get('/auth', async(req, res) => {
 
 //git available places by floor
 router.get('/auth/:floor', async(req, res) => {
-    //floor is the only one param
-    const response = await getAllAvailableByFloor(req.params);
+    const { floor } = req.params;
+    const { companyId } = req;
+    const response = await getAllAvailableByFloor({ floor, companyId });
     res.status(SUCCESS).json(response);
 });
 

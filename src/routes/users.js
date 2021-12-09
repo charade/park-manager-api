@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { users } = require('../controllers');
-const { register, login, updatePermissions,getColleagues } = users
+const { register, login, updatePermissions,getColleagues, updateUser } = users
 const { generateToken } = require('../utils/authentication');
 const { generateHash } = require('../utils/pass');
 const { CREATED, SUCCESS, NO_CONTENT } = require('../handlers/status_codes');
@@ -58,6 +58,30 @@ router.patch('/auth/permission', async(req, res, next) => {
         return;
     }
     res.status(SUCCESS).json({status : NO_CONTENT});
+});
+
+router.patch('/auth/update-user', async(req, res, next) => {
+    const { id } = req;
+    req.body.id = id;
+
+    if(req.files){
+        const { avatar } = req.files;
+        const base64Avatar = avatar.data.toString('base64');
+        req.body.avatar = base64Avatar;
+    };
+    // hash new password
+    if(req.body.password){
+        const { password } = req.body;
+        const hash = await generateHash(password, 10);
+        req.body.password = hash;
+    };
+    const response = await updateUser(req.body);
+
+    if(response.error){
+        next(response.error);
+        return;
+    }
+    res.status(SUCCESS).json(response);
 });
 
 

@@ -19,17 +19,13 @@ module.exports = {
         return createdPlace;
     },
 
-    getAllAvailable : (companyId) => {
-        return places.findAll({
-            where : { available: true, companyId }
-        })
-    },
+    getAllAvailable : (companyId) => places.findAll({ where : { available: true, companyId } }),
+    
     getAllAvailableByFloor : (data) =>{
+        const { floor, companyId } =  data;
+
         return places.findAll({
-            where : { 
-                floor : data.floor,
-                available : true
-            }
+            where : { floor, companyId, available : true}
         })
     },
 

@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { users } = require('../controllers');
-const { register, login, updatePermissions,getColleagues, updateUser } = users
+const { register, login, updatePermissions,getColleagues, updateUser, createNewAccount } = users
 const { generateToken } = require('../utils/authentication');
 const { generateHash } = require('../utils/pass');
 const { CREATED, SUCCESS, NO_CONTENT } = require('../handlers/status_codes');
@@ -16,6 +16,7 @@ router.post('/register', async(req, res, next) => {
     req.body.companyName = companyName.toLowerCase();
     /**
      */
+    console.log(req.body)
     const response = await register(req.body);
     if(response && response.error){
         next(response.error);
@@ -31,8 +32,9 @@ router.post('/login', async(req, res, next) => {
         next(response.error);
         return;
     }; 
-    const { avatar, firstName, lastName, id, email, companyId, role } = response.dataValues;
-    const user = { avatar, firstName, lastName, role, email };
+    const { avatar, firstName, lastName, id, email, companyId, role, company } = response.dataValues;
+    const { name: companyName } = company
+    const user = { avatar, firstName, lastName, role, email, companyName };
     const token = await generateToken({id, companyId});
     res.status(SUCCESS).json({auth : token, user});
 });
@@ -81,8 +83,28 @@ router.patch('/auth/update-user', async(req, res, next) => {
         next(response.error);
         return;
     }
+    const { company } = response.dataValues;
+    const { name: companyName } = company;
+    response.dataValues.companyName = companyName;
     res.status(SUCCESS).json(response);
 });
+
+router.post('/auth/create-admin-account',async(req, res, next) => {
+    const { companyId } = req;
+    const { password, email } = req.body;
+    const hash = await generateHash(password, 10);
+    req.body.password = hash;
+    req.body.email = email.toLowerCase();
+    req.body.companyId = companyId;
+    const newAdminAccount = await createNewAccount(req.body);
+    if(newAdminAccount.error){
+        next(newAdminAccount.error)
+        return;
+    }
+    //save pass to remind datas to whome creating new account;
+    newAdminAccount.dataValues.password = password;
+    res.status(CREATED).json(newAdminAccount)
+})
 
 
 

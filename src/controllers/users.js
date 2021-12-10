@@ -8,19 +8,31 @@ const { Op } = require('Sequelize');
 module.exports = {
     register : async(data) => {
         const { firstName, lastName, email, password, companyName : name } = data ;
-        //check if user email already exists
         const user = await users.findOne({ where : { email } });
-
+        const company = await companies.findOne({ where : { name } });
+        
+        //check if user email already exists
         if(user){
             return { error : new ErrorOccured(FORBIDDEN, 'email already registered.') }
         };
+        
         /**
+         * admin user created by another already registred admin
+         */
+        if(data.createdByExisting){
+            console.log(company)
+            const newUser = await users.create(data);
+            // return newUser;
+        };
+        /**
+         *  for self creating user we 
          *  need to check if company exists
          */
-        const company = await companies.findOne({ where : { name } });
+        
         /**
-         * user signing up and creating company is admin
+         * self created user creating company is admin
          */
+
         if(data.role === role.ADMIN){
             if(company){
                 return { error : new ErrorOccured(FORBIDDEN, 'Company already registered.')}
@@ -55,9 +67,13 @@ module.exports = {
         /**
          * check if unique email exists
          */
+        const { email } = data;
         const user = await users.findOne({ 
-            where : {
-                email : data.email
+            where : { email : data.email },
+            include: {
+                as :'company',
+                model : companies,
+                attributes : ['name']
             }
         });
         if(!user){
@@ -110,7 +126,14 @@ module.exports = {
             }
         };
         const { id } = data;
-        const user = await users.findOne({ where : { id } });
+        const user = await users.findOne(
+            { where : { id } ,
+            include: {
+                as :'company',
+                model : companies,
+                attributes : ['name']
+            }
+        });
 
         Object.keys(data).forEach(el => {
             user[el] = data[el];
@@ -124,5 +147,15 @@ module.exports = {
             return {error : new Error()}
         }
         
+    },
+    createNewAccount : async(data) => {
+        const { email } = data;
+        //check if email exist
+        const emailExist = await users.findOne({ where : { email } });
+        if(emailExist){
+            return { error : new ErrorOccured(FORBIDDEN, 'email already exists.') }
+        }
+        const newAccount = users.create(data).catch(() => ({ error : new Error() }))
+        return newAccount;
     }
 }

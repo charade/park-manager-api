@@ -15,20 +15,6 @@ module.exports = {
         if(user){
             return { error : new ErrorOccured(FORBIDDEN, 'email already registered.') }
         };
-        
-        /**
-         * admin user created by another already registred admin
-         */
-        if(data.createdByExisting){
-            console.log(company)
-            const newUser = await users.create(data);
-            // return newUser;
-        };
-        /**
-         *  for self creating user we 
-         *  need to check if company exists
-         */
-        
         /**
          * self created user creating company is admin
          */
@@ -88,8 +74,6 @@ module.exports = {
         };
         return user;
     },
-    /**
-     */
     getColleagues : (companyId, userId) => users.findAll({ 
         where : { 
             companyId,
@@ -138,6 +122,7 @@ module.exports = {
         Object.keys(data).forEach(el => {
             user[el] = data[el];
         });
+        
         await user.save();
         delete user.dataValues.password;
         return user;

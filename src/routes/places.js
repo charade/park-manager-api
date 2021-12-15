@@ -29,7 +29,6 @@ router.get('/auth/parked', async(req, res, next) => {
     }
     res.status(SUCCESS).json(place);
 });
-
 // get all available places
 router.get('/auth', async(req, res) => {
     //assume users can only fetch available place from their company;
@@ -37,15 +36,13 @@ router.get('/auth', async(req, res) => {
     const response = await getAllAvailable(companyId);
     res.status(SUCCESS).json(response);
 });
-
-//git available places by floor
+//get available places by floor
 router.get('/auth/:floor', async(req, res) => {
     const { floor } = req.params;
     const { companyId } = req;
     const response = await getAllAvailableByFloor({ floor, companyId });
     res.status(SUCCESS).json(response);
 });
-
 //update
 router.patch('/auth', async(req, res, next) => {
     const { id } = req;
@@ -57,7 +54,7 @@ router.patch('/auth', async(req, res, next) => {
     };
     res.status(SUCCESS).json(response);
 });
-
+//
 router.patch('/auth/free', async (req, res, next) => {
     const { id } = req.body;
     const response = await free(id);

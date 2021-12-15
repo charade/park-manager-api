@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     //timeStamp
     occupancyTime: {
-      type : DataTypes.INTEGER,
+      type : DataTypes.FLOAT,
       defaultValue :0
     },
     userId : {

@@ -60,6 +60,9 @@ module.exports = {
     free : async (id) => {
         try{
             const place = await places.findOne({ where : { id } });
+            let occupancyTime = Date.now() - (new Date(place.dataValues.updatedAt).getTime());
+            occupancyTime = ~~(occupancyTime / 1000) / 3600; //time express in hour
+            place.occupancyTime = occupancyTime;
             place.userId = null;
             place.available = true;
             await place.save();
